@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/rajanmali/project-fox-game#readme",
   "devDependencies": {
-    "parcel-bundler": "^1.12.4"
+    "parcel-bundler": "^1.12.4",
+    "prettier": "^2.0.5"
   }
 }
