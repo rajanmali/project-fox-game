@@ -44,12 +44,10 @@ const gameState = {
     ) {
       return;
     }
-
     if (this.current === "INIT" || this.current === "DEAD") {
       this.startGame();
       return;
     }
-
     switch (icon) {
       case "weather":
         this.changeWeather();
