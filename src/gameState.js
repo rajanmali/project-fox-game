@@ -9,6 +9,36 @@ import {
   getNextDieTime,
 } from "./constants";
 
+import forestDay from "./sounds/forest-day.wav";
+import forestDayBg from "./sounds/forest-day-bg.wav";
+import forestNight from "./sounds/forest-night.wav";
+import forestNightBg from "./sounds/forest-night-bg.wav";
+import forestRain from "./sounds/forest-rain.wav";
+import forestRainBg from "./sounds/forest-rain-bg.wav";
+import happySound from "./sounds/happy-sound.mp3";
+import foxDeath from "./sounds/fox-death.mp3";
+
+const forestDayBgAudio = new Audio(forestDayBg);
+const forestDayAudio = new Audio(forestDay);
+const forestNightBgAudio = new Audio(forestNightBg);
+const forestNightAudio = new Audio(forestNight);
+const forestRainBgAudio = new Audio(forestRainBg);
+const forestRainAudio = new Audio(forestRain);
+const happySoundAudio = new Audio(happySound);
+const foxDeathAudio = new Audio(foxDeath);
+
+forestRainBgAudio.loop = true;
+forestRainAudio.loop = true;
+forestRainAudio.volume = 0.6;
+forestNightBgAudio.loop = true;
+forestNightAudio.loop = true;
+forestNightAudio.volume = 0.6;
+forestDayBgAudio.loop = true;
+forestDayAudio.loop = true;
+forestDayAudio.volume = 0.6;
+happySoundAudio.loop = true;
+foxDeathAudio.loop = true;
+
 const gameState = {
   current: "INIT",
   clock: 1,
@@ -97,18 +127,32 @@ const gameState = {
     this.timeToStartCelebrating = -1;
     this.timeToEndCelebrating = this.clock + 2;
     modFox("celebrate");
+    forestRainAudio.volume = 0.5;
+    forestRainBgAudio.volume = 0.5;
+    forestDayBgAudio.volume = 0.5;
+    forestDayAudio.volume = 0.5;
+    happySoundAudio.play();
   },
   endCelebrating() {
     this.current = "IDLING";
     this.timeToEndCelebrating = -1;
     this.determineFoxState();
     togglePoopBag(false);
+    happySoundAudio.pause();
   },
   determineFoxState() {
     if (this.current === "IDLING") {
       if (SCENES[this.scene] === "rain") {
+        forestRainBgAudio.play();
+        forestRainAudio.play();
+        forestDayBgAudio.pause();
+        forestDayAudio.pause();
         modFox("rain");
       } else {
+        forestDayBgAudio.play();
+        forestDayAudio.play();
+        forestRainBgAudio.pause();
+        forestRainAudio.pause();
         modFox("idling");
       }
     }
@@ -119,6 +163,11 @@ const gameState = {
     modFox("egg");
     modScene("day");
     writeModal();
+
+    forestDayBgAudio.play();
+    forestDayBgAudio.loop = true;
+    forestDayAudio.play();
+    forestDayAudio.loop = true;
   },
   wake() {
     this.current = "IDLING";
@@ -135,6 +184,12 @@ const gameState = {
     this.wakeTime = this.clock + NIGHT_LENGTH;
     modFox("sleep");
     modScene("night");
+    forestNightBgAudio.play();
+    forestNightAudio.play();
+    forestDayBgAudio.pause();
+    forestDayAudio.pause();
+    forestRainBgAudio.pause();
+    forestRainAudio.pause();
   },
   getHungry() {
     this.current = "HUNGRY";
@@ -159,6 +214,13 @@ const gameState = {
     writeModal(
       "The Fox died :( <br/> Press the middle button to restart the game."
     );
+    forestDayBgAudio.pause();
+    forestDayAudio.pause();
+    forestRainBgAudio.pause();
+    forestRainAudio.pause();
+    forestNightBgAudio.pause();
+    forestNightAudio.play();
+    foxDeathAudio.play();
   },
 };
 
